@@ -1,0 +1,11 @@
+<todo version="0.1.19">
+    <title>
+        Todo List for libreadline++
+    </title>
+    <note priority="veryhigh" time="1136016180">
+        Finish ReadLine interface.
+    </note>
+    <note priority="medium" time="1136024621">
+        Write a decent example that actually does something.
+    </note>
+</todo>

@@ -1,0 +1,10 @@
+README for libreadline++
+
+The libreadline++ library provides C++ interfaces for GNU readline's
+libreadline and libhistory libraries.
+
+HTML API documentation is available via Doxygen.  Use the doxygen Makefile
+target to build it (make doxygen).
+
+libreadline++ was written by Aaron Walker <ka0ttic@gentoo.org>.  For the
+latest version, see http://developer.berlios.de/projects/libreadline++.
