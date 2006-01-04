@@ -1,0 +1,33 @@
+if ![info exists prompt] then {
+    set prompt "prompt> "
+}
+
+proc test_load { arg } {
+    #
+}
+
+proc test_exit {} {
+    send "quit\n"
+    expect {
+	-re "exiting.*!!! history size.*" { }
+    }
+}
+
+proc test_start {} {
+    global TEST
+    global prompt
+    global spawn_id
+    global verbose
+
+    if { $verbose > 1 } {
+	send_user "starting $TEST\n"
+    }
+    spawn $TEST
+    expect {
+	-re "No such file.*" { perror "Can't start $TEST"; exit 1 }
+	-re "!!! history size = 0.*$prompt$" { }
+	timeout { perror "Failed to spawn $TEST (timeout)"; exit 1 }
+    }
+}
+
+test_start

@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = 1.8 dist-bzip2 no-dist-gzip
 
-SUBDIRS = doc libreadline++ examples
+SUBDIRS = doc libreadline++ examples tests
 
 MAINTAINERCLEANFILES = \
 	INSTALL \
@@ -59,7 +59,7 @@ $(pc):
 		-e "s|\@libdir\@|$(libdir)|g" \
 		-e "s|\@includedir\@|$(includedir)|g" \
 		-e "s|\@VERSION\@|$(VERSION)|g" \
-		libreadline++.pc.in > $@
+		$(pc).in > $@
 
 dist-hook: ChangeLog TODO
 
@@ -67,5 +67,5 @@ dist-sign: dist
 	gpg --armour --detach-sign "$(PACKAGE)-$(VERSION).tar.bz2"
 
 dist-upload: dist-sign
-	echo -ne "user anonymous $(PACKAGE)\ncd incoming\nput $(PACKAGE)-$(VERSION).tar.bz2\nput $(PACKAGE)-$(VERSION).tar.bz2.asc\nbye" | \
+	echo -ne "user anonymous libreadlinepp\ncd incoming\nput $(PACKAGE)-$(VERSION).tar.bz2\nput $(PACKAGE)-$(VERSION).tar.bz2.asc\nbye" | \
 		ftp -n ftp.berlios.de
