@@ -22,8 +22,6 @@ libreadline___la_LIBADD = @READLINE_LIBS@
 library_includedir = $(includedir)/$(PACKAGE)
 library_include_HEADERS = $(hh_sources)
 
-EXTRA_DIST = doxygen.hh
-
 srchtml: $(foreach f, $(libreadline___la_SOURCES), $(f).html)
 	@for x in $(SUBDIRS) ; do \
 		$(MAKE) -C $${x} $@ ; \
