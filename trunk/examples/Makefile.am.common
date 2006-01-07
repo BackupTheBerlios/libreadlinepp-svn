@@ -1,0 +1,6 @@
+# $Id$
+
+INCLUDES = -I$(top_builddir)
+LIBS = $(top_builddir)/libreadline++/libreadline++.la
+
+# vim: set ft=automake :

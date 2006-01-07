@@ -103,4 +103,5 @@ AC_OUTPUT(Makefile
           doc/Doxyfile
 	  libreadline++/Makefile
 	  examples/Makefile
+	  examples/calc/Makefile
 	  tests/Makefile)
