@@ -67,7 +67,7 @@
  *
  * Below is a simple example of using the libreadline++ library:
  *
- * @include main.cc
+ * @include calc/main.cc
  *
  * @section compiling Compiling libreadline++
  *

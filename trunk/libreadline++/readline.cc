@@ -24,25 +24,37 @@
 # include "config.h"
 #endif
 
+#include <iostream>
 #include <cstdlib>
 #include <libreadline++/readline.hh>
 
-static const std::string * _rl_buf = NULL;
-
-static int
-default_readline_startup_hook()
-{
-    if (_rl_buf and not _rl_buf->empty())
-        rl_insert_text(_rl_buf->c_str());
-    return 0;
-}
-
 namespace rl {
+/*** static members *********************************************************/
+const ReadLine::EditMode ReadLine::vi    = static_cast<ReadLine::EditMode>(0);
+const ReadLine::EditMode ReadLine::emacs = static_cast<ReadLine::EditMode>(1);
+const ReadLine::State ReadLine::none = static_cast<ReadLine::State>(RL_STATE_NONE);
+const ReadLine::State ReadLine::initializing = static_cast<ReadLine::State>(RL_STATE_INITIALIZING);
+const ReadLine::State ReadLine::initialized = static_cast<ReadLine::State>(RL_STATE_INITIALIZED);
+const ReadLine::State ReadLine::termprepped = static_cast<ReadLine::State>(RL_STATE_TERMPREPPED);
+const ReadLine::State ReadLine::readcmd = static_cast<ReadLine::State>(RL_STATE_READCMD);
+const ReadLine::State ReadLine::metanext = static_cast<ReadLine::State>(RL_STATE_METANEXT);
+const ReadLine::State ReadLine::dispatching = static_cast<ReadLine::State>(RL_STATE_DISPATCHING);
+const ReadLine::State ReadLine::moreinput = static_cast<ReadLine::State>(RL_STATE_MOREINPUT);
+const ReadLine::State ReadLine::isearch = static_cast<ReadLine::State>(RL_STATE_ISEARCH);
+const ReadLine::State ReadLine::nsearch = static_cast<ReadLine::State>(RL_STATE_NSEARCH);
+const ReadLine::State ReadLine::search = static_cast<ReadLine::State>(RL_STATE_SEARCH);
+const ReadLine::State ReadLine::numericarg = static_cast<ReadLine::State>(RL_STATE_NUMERICARG);
+const ReadLine::State ReadLine::macroinput = static_cast<ReadLine::State>(RL_STATE_MACROINPUT);
+const ReadLine::State ReadLine::macrodef = static_cast<ReadLine::State>(RL_STATE_MACRODEF);
+const ReadLine::State ReadLine::overwrite = static_cast<ReadLine::State>(RL_STATE_OVERWRITE);
+const ReadLine::State ReadLine::completing = static_cast<ReadLine::State>(RL_STATE_COMPLETING);
+const ReadLine::State ReadLine::sighandler = static_cast<ReadLine::State>(RL_STATE_SIGHANDLER);
+const ReadLine::State ReadLine::undoing = static_cast<ReadLine::State>(RL_STATE_UNDOING);
+const ReadLine::State ReadLine::done = static_cast<ReadLine::State>(RL_STATE_DONE);
 /****************************************************************************/
 ReadLine::ReadLine(const std::string& name,
                    const std::string& prompt) throw()
-    : _name(name), _prompt(prompt), _input(),
-      _inithook(default_readline_startup_hook)
+    : _name(name), _prompt(prompt), _input(), _inithook(NULL)
 {
     _init();
 }
@@ -72,13 +84,13 @@ ReadLine::_init() throw()
     if (not _name.empty())
         rl_readline_name = _name.c_str();
 
-    rl_startup_hook = _inithook;
+    if (_inithook)
+        rl_startup_hook = _inithook;
 }
 /****************************************************************************/
 std::string&
-ReadLine::operator()(const std::string& text) const throw (ReadLineEOF)
+ReadLine::operator()(void) const throw (ReadLineEOF)
 {
-    _rl_buf = &text;
     _input.clear();
 
     char *input = readline(_prompt.c_str());

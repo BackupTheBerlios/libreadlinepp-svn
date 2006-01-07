@@ -43,6 +43,37 @@ namespace rl {
     class ReadLine
     {
         public:
+            ///@{
+            /// Denotes editing mode.
+            enum EditMode {};
+            static const EditMode emacs;
+            static const EditMode vi;
+            ///@}
+
+            ///@{
+            /// Denotes current state.
+            enum State {};
+            static const State none;
+            static const State initializing;
+            static const State initialized;
+            static const State termprepped;
+            static const State readcmd;
+            static const State metanext;
+            static const State dispatching;
+            static const State moreinput;
+            static const State isearch;
+            static const State nsearch;
+            static const State search;
+            static const State numericarg;
+            static const State macroinput;
+            static const State macrodef;
+            static const State overwrite;
+            static const State completing;
+            static const State sighandler;
+            static const State undoing;
+            static const State done;
+            ///@}
+
             /** Default constructor.
              * @param name Application name (rl_readline_name) for conditional
              * parsing of inputrc.
@@ -78,23 +109,42 @@ namespace rl {
             { _prompt.assign(prompt); }
             /// Get prompt (rl_prompt).
             inline const std::string& prompt() const { return _prompt; }
+
+            /// Get current edit mode.
+            inline EditMode mode() const
+            { return (rl_editing_mode ? emacs : vi ); }
+            /// Set current edit mode.
+            inline void set_mode(EditMode mode)
+            { rl_editing_mode = mode; }
+
+            /// Set the specified state bit.
+            inline void set_state(State state) { RL_SETSTATE(state); }
+            /// Unset the specified state bit.
+            inline void unset_state(State state) { RL_UNSETSTATE(state); }
+            /// Determine if the specified state bit is set.
+            inline bool state_is_set(State state) const 
+            { return RL_ISSTATE(state); }
+            /// Get current state bits (rl_readline_state).
+            inline int state() const { return rl_readline_state; }
             
             /** Set attempted completion function
              * (rl_attempted_completion_function).
              */
             inline void set_attempted_comp_hook(rl_completion_func_t *hook);
-
             /// Set completion entry function (rl_completion_entry_function).
             inline void set_completion_entry_hook(rl_compentry_func_t *hook);
+            /// Set pre-input hook (rl_pre_input_hook).
+            inline void set_pre_input_hook(rl_hook_func_t *hook);
+            /// Set event hook (rl_event_hook).
+            inline void set_event_hook(rl_hook_func_t *hook);
+            /// Set getc function (rl_getc_function).
+            inline void set_getc_function(rl_getc_func_t *func);
 
             /** Get user input.
-             * @param text preexisting text to be present when the prompt is
-             * shown (defaults to empty).
              * @returns reference to user input string.
              * @exception ReadLineEOF
              */
-            std::string& operator()(const std::string& text = "") const
-                throw (ReadLineEOF);
+            std::string& operator()(void) const throw (ReadLineEOF);
 
         private:
             void _init() throw();
@@ -125,6 +175,27 @@ namespace rl {
     {
         assert(hook);
         rl_completion_entry_function = hook;
+    }
+
+    inline void
+    ReadLine::set_pre_input_hook(rl_hook_func_t *hook)
+    {
+        assert(hook);
+        rl_pre_input_hook = hook;
+    }
+
+    inline void
+    ReadLine::set_event_hook(rl_hook_func_t *hook)
+    {
+        assert(hook);
+        rl_event_hook = hook;
+    }
+
+    inline void
+    ReadLine::set_getc_function(rl_getc_func_t *func)
+    {
+        assert(func);
+        rl_getc_function = func;
     }
 
 } // namespace rl
